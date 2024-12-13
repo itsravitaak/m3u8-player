@@ -1,24 +1,104 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>M3U8 Player</title>
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-        <script type="text/javascript" src="https://unpkg.com/popper.js@1.12.3"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="home.css">
-        <script type="text/javascript" src="main.js"></script>
-    </head>
-    <body>
-        <div class="col-lg-6" id="text-box">
-            <h1 class="page-name">M3U8 Player</h1>
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Paste the m3u8 link here" id="m3u8-placeholder">
-                <span class="input-group-btn">
-                    <button class="btn btn-primary" type="button" id="play-btn">Play</button>
-                </span>
-            </div>
-        </div>
-    </body>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Ravi Taak</title>
+  </head>
+  <body>
+    <script>
+      function getParam(sname) {
+        var params = location.search.substr(location.search.indexOf("?") + 1);
+        var sval = params.replace("sv=", "");
+
+        return sval;
+      }
+      var sv = getParam("sv");
+    </script>
+    <script>
+      var responseText = "" + sv + "";
+      urlArry = responseText.split(",");
+      start = true;
+      num_of_urlArry = urlArry.length;
+      index_of_urlArry = 0;
+    </script>
+
+    <style>
+      .plyr {
+        position: fixed !important;
+        bottom: 0;
+        right: 0;
+        top: 0;
+        left: 0;
+        z-index: 999 !important;
+      }
+    </style>
+
+    <link rel="stylesheet" href="//cdn.plyr.io/3.6.2/plyr.css" />
+    <script type="text/javascript">
+       var tryCount = 0;
+       var minimalUserResponseInMiliseconds = 200;
+       function check() { before = new Date().getTime(); debugger; after = new Date().getTime(); if (after - before > minimalUserResponseInMiliseconds) {
+      document.write(" Alert!! Close Developer Tools Now... "); self.location.replace(window.location.protocol +
+      window.location.href.substring(window.location.protocol.length));
+      }else{
+      before = null; after = null; delete before; delete after;
+      }
+      setTimeout(check, 100);
+       }
+       check();
+       window.onload = function() { document.addEventListener("contextmenu", function(e){ e.preventDefault();
+      }, false);
+     
+      
+        function disabledEvent(e){ if (e.stopPropagation){ e.stopPropagation();
+        } else if (window.event){
+        window.event.cancelBubble = true;
+        }
+        e.preventDefault(); return false;
+        }
+       };
+    </script>
+    <script>
+
+    function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&#]' + name + '=([^&#]*)');
+            var results = regex.exec(location.hash);
+            return results === null ? '' : decodeURIComponent(results[1]);
+        }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const streamUrl = getUrlParameter('LINK');
+        const video = document.querySelector("video");
+        const player = new Plyr(video, {
+          captions: { active: true, update: true, language: "en" },
+        });
+
+
+        if (!Hls.isSupported()) {
+          video.src = streamUrl;
+        } else {
+          const hls = new Hls();
+          hls.loadSource(streamUrl);
+          hls.attachMedia(video);
+          window.hls = hls;
+          player.on("languagechange", () => {
+            setTimeout(() => (hls.subtitleTrack = player.currentTrack), 50);
+          });
+        }
+        window.player = player;
+      });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdn.plyr.io/3.6.2/plyr.polyfilled.js"></script>
+
+    <video
+      controls autoplay
+      preload="metadata"
+      style="--plyr-color-main: var(--linkB)"
+      poster="https://blogger.googleusercontent.com/img/a/AVvXsEjSNw5gLSyR6kGpYC5LabxW2TiO5_b8dJjBGiG9ckbbqlDClxgi54labUooKCpB3b6evl8JcBYtjOmzns1EZudrjZuXgULhlFQpAr2kULFYaE31ELRKQfvjbY8TIEIV_FgywSk29NPuMVkj79jtU_8-5qtvGu_fQ8aiBBIGOKjiJrHoMXXtYXQ1cC5K"
+    ></video>
+  </body>
 </html>
